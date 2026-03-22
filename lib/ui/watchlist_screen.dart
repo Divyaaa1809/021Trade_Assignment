@@ -35,38 +35,49 @@ class WatchlistScreen extends StatelessWidget {
                     );
                   },
                 ),
-          body: state.stocks.isEmpty
-              ? const Center(child: Text("No stocks in watchlist"))
-              : ListView.builder(
-                  itemCount: state.stocks.length,
-                  itemBuilder: (_, index) {
-                    final stock = state.stocks[index];
+          body: BlocListener<StockBloc, StockState>(
+            listener: (context, state) {
+              if (state.errorMessage != null) {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            buildTextCol(
-                              stock,
-                              title: stock.name,
-                              subtitle: stock.exchange,
-                            ),
-                            buildTextCol(
-                              stock,
-                              title: Formatter.formatPrice(stock.price),
-                              subtitle: Formatter.formatChange(stock.change),
-                              isColored: true,
-                              alignEnd: true,
-                            ),
-                          ],
-                        ),
-                        Divider(height: 0.5, color: Colors.grey[300]),
-                      ],
-                    );
-                  },
-                ),
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+              }
+            },
+            child: state.stocks.isEmpty
+                ? const Center(child: Text("No stocks in watchlist"))
+                : ListView.builder(
+                    itemCount: state.stocks.length,
+                    itemBuilder: (_, index) {
+                      final stock = state.stocks[index];
+
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              buildTextCol(
+                                stock,
+                                title: stock.name,
+                                subtitle: stock.exchange,
+                              ),
+                              buildTextCol(
+                                stock,
+                                title: Formatter.formatPrice(stock.price),
+                                subtitle: Formatter.formatChange(stock.change),
+                                isColored: true,
+                                alignEnd: true,
+                              ),
+                            ],
+                          ),
+                          Divider(height: 0.5, color: Colors.grey[300]),
+                        ],
+                      );
+                    },
+                  ),
+          ),
         );
       },
     );

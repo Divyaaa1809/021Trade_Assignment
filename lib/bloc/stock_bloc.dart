@@ -42,6 +42,7 @@ class StockBloc extends Bloc<StockEvent, StockState> {
       emit(StockState(stocks: box.values.toList()));
     } catch (e) {
       log.severe("Error loading stocks: $e");
+      emit(state.copyWith(errorMessage: "Failed to load stocks"));
     }
   }
 
@@ -69,9 +70,10 @@ class StockBloc extends Bloc<StockEvent, StockState> {
       box.deleteAll(box.keys);
       box.clear();
       box.addAll(list);
-      emit(StockState(stocks: box.values.toList()));
+      emit(StockState(stocks: box.values.toList(), errorMessage: null));
     } catch (e) {
       log.severe("Error reordering stocks: $e");
+      emit(state.copyWith(errorMessage: "Failed to reorder stocks"));
     }
   }
 
@@ -79,8 +81,9 @@ class StockBloc extends Bloc<StockEvent, StockState> {
     try {
       final list = List<Stock>.from(state.stocks);
 
-      if (list.isEmpty) return;
-      if (event.index < 0 || event.index >= list.length) return;
+      if (event.index < 0 || event.index >= list.length) {
+        throw Exception("Invalid index");
+      }
 
       list.removeAt(event.index);
 
@@ -88,9 +91,10 @@ class StockBloc extends Bloc<StockEvent, StockState> {
       box.clear();
       box.addAll(list);
 
-      emit(StockState(stocks: box.values.toList()));
+      emit(StockState(stocks: box.values.toList(), errorMessage: null));
     } catch (e) {
       log.severe("Error deleting stock: $e");
+      emit(state.copyWith(errorMessage: "Something went wrong while deleting"));
     }
   }
 }
