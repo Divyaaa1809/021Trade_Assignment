@@ -21,34 +21,69 @@ class EditWatchlistScreen extends StatelessWidget {
       ),
       body: BlocBuilder<StockBloc, StockState>(
         builder: (context, state) {
-          return ReorderableListView.builder(
-            itemCount: state.stocks.length,
-            onReorder: (oldIndex, newIndex) {
-              if (oldIndex == newIndex || oldIndex + 1 == newIndex) return;
+          return state.stocks.isEmpty
+              ? const Center(child: Text("No stocks in watchlist"))
+              : ReorderableListView.builder(
+                  itemCount: state.stocks.length,
+                  onReorder: (oldIndex, newIndex) {
+                    if (oldIndex == newIndex || oldIndex + 1 == newIndex) {
+                      return;
+                    }
 
-              context.read<StockBloc>().add(
-                ReorderStockEvent(oldIndex, newIndex),
-              );
-            },
-            itemBuilder: (_, index) {
-              final stock = state.stocks[index];
+                    context.read<StockBloc>().add(
+                      ReorderStockEvent(oldIndex, newIndex),
+                    );
+                  },
+                  itemBuilder: (_, index) {
+                    final stock = state.stocks[index];
 
-              return Column(
-                key: ValueKey(index),
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.drag_handle, size: 21),
-                    title: Text(
-                      stock.name,
-                      style: TextStyle(fontSize: 14.5, color: Colors.grey[700]),
-                    ),
-                    trailing: const Icon(Icons.delete, size: 21),
-                  ),
-                  Divider(height: 0.5, color: Colors.grey[300]),
-                ],
-              );
-            },
-          );
+                    return Column(
+                      key: ValueKey(index),
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.drag_handle, size: 21),
+                          title: Text(
+                            stock.name,
+                            style: TextStyle(
+                              fontSize: 14.5,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: const Text("Delete Stock"),
+                                  content: const Text(
+                                    "Are you sure you want to delete this stock?",
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Cancel"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        context.read<StockBloc>().add(
+                                          DeleteStockEvent(index),
+                                        );
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text("Delete"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Divider(height: 0.5, color: Colors.grey[300]),
+                      ],
+                    );
+                  },
+                );
         },
       ),
     );

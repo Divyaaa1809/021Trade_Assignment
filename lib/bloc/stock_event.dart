@@ -8,3 +8,9 @@ class ReorderStockEvent extends StockEvent {
 
   ReorderStockEvent(this.oldIndex, this.newIndex);
 }
+
+class DeleteStockEvent extends StockEvent {
+  final int index;
+
+  DeleteStockEvent(this.index);
+}

@@ -13,6 +13,7 @@ class StockBloc extends Bloc<StockEvent, StockState> {
   StockBloc() : super(const StockState(stocks: [])) {
     on<LoadStocksEvent>(_onLoad);
     on<ReorderStockEvent>(_onReorder);
+    on<DeleteStockEvent>(_onDelete);
   }
 
   void _onLoad(LoadStocksEvent event, Emitter<StockState> emit) {
@@ -71,6 +72,25 @@ class StockBloc extends Bloc<StockEvent, StockState> {
       emit(StockState(stocks: box.values.toList()));
     } catch (e) {
       log.severe("Error reordering stocks: $e");
+    }
+  }
+
+  void _onDelete(DeleteStockEvent event, Emitter<StockState> emit) {
+    try {
+      final list = List<Stock>.from(state.stocks);
+
+      if (list.isEmpty) return;
+      if (event.index < 0 || event.index >= list.length) return;
+
+      list.removeAt(event.index);
+
+      box.deleteAll(box.keys);
+      box.clear();
+      box.addAll(list);
+
+      emit(StockState(stocks: box.values.toList()));
+    } catch (e) {
+      log.severe("Error deleting stock: $e");
     }
   }
 }
