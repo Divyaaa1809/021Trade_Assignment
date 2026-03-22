@@ -16,7 +16,7 @@ class EditWatchlistScreen extends StatelessWidget {
         shadowColor: Colors.grey[100],
         title: const Text(
           "Edit Watchlist",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
         ),
       ),
       body: BlocBuilder<StockBloc, StockState>(
@@ -37,12 +37,12 @@ class EditWatchlistScreen extends StatelessWidget {
                 key: ValueKey(index),
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.drag_handle, size: 22),
+                    leading: const Icon(Icons.drag_handle, size: 21),
                     title: Text(
                       stock.name,
-                      style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                      style: TextStyle(fontSize: 14.5, color: Colors.grey[700]),
                     ),
-                    trailing: const Icon(Icons.delete, size: 22),
+                    trailing: const Icon(Icons.delete, size: 21),
                   ),
                   Divider(height: 0.5, color: Colors.grey[300]),
                 ],

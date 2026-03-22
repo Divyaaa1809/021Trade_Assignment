@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:logging/logging.dart';
 import '../models/stock.dart';
-import '../util/constant.dart';
+import '../utils/constant.dart';
 import 'stock_event.dart';
 import 'stock_state.dart';
 
